@@ -1,0 +1,8 @@
+{
+  "name": "form-wizard-starter",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    }
+  }
+}
