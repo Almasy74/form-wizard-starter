@@ -166,9 +166,6 @@ footer`}
 
             <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
               <Button variant="primary" onClick={handleGenerate}>Generer</Button>
-              <Button variant="secondary" onClick={() => copyCode('top')} disabled={!code}>
-                {copiedTop ? 'Kopiert!' : 'Kopier kode'}
-              </Button>
             </div>
           </div>
         </article>

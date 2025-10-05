@@ -1,17 +1,27 @@
-/* Sentrert, responsiv container (S/M/L) fra DS-tokens */
+/* Sentrert, responsiv container – matcher skatteetaten.no */
 .extContainer {
-  width: var(--semantic-responsive-container);
+  width: 100%;
+  max-width: 1160px;           /* L */
+  margin: 0 auto;
   box-sizing: border-box;
-  padding: var(--semantic-responsive-container-spacing);
-  margin: 0 auto;
+  padding: 24px;               /* litt luft på alle skjermer */
 }
 
-/* Smalere artikkelkolonne for innhold/lesetekst */
+/* Trinn ned til M og S */
+@media (max-width: 1200px) {
+  .extContainer { max-width: 960px; }   /* M */
+}
+@media (max-width: 1000px) {
+  .extContainer { max-width: 560px; }   /* S */
+}
+
+/* Smalere spalte for brødtekst/innhold (som artikkel) */
 .semanticArticle {
-  width: var(--semantic-responsive-article);
+  width: 100%;
+  max-width: 760px;            /* komfortabel lesebredde */
   margin: 0 auto;
 }
 
-/* (valgfritt) grunnrydding */
+/* grunnrydding */
 html, body, #root { min-height: 100%; }
 body { margin: 0; }
