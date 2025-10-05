@@ -1,7 +1,6 @@
 import '@skatteetaten/ds-core-designtokens/index.css';
-import './layout.css';
+import './layout.css'; // viktige container-klasser
 import { useState, type ReactElement } from 'react';
-import { Button } from '@skatteetaten/ds-buttons';
 import { TextField } from '@skatteetaten/ds-forms';
 import { TopBannerExternal, Footer } from '@skatteetaten/ds-layout';
 import { StepList } from '@skatteetaten/ds-collections';
@@ -17,7 +16,7 @@ function normalize(text: string) {
     .trim();
 }
 
-/** Parser “ovenfra og ned”: topbanner / hovedinnhold / footer */
+/** Parser for “ovenfra og ned”: topbanner / hovedinnhold / footer */
 function tryGenerateStructuredPage(raw: string): GenResult | null {
   const lines = raw.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
   if (lines.length === 0) return null;
@@ -48,13 +47,13 @@ function tryGenerateStructuredPage(raw: string): GenResult | null {
   if (countMatch) textFieldCount = parseInt(countMatch[1], 10);
   if (!countMatch && /\b(tekstfelt|input)\b/.test(n)) textFieldCount = 1;
 
-  // JSX for main
+  // JSX for main (bruk samme bredde som resten av siden)
   const textFieldsJsx = Array.from({ length: textFieldCount }, (_, i) => (
     <TextField key={i} label={i === 0 ? 'Fornavn' : i === 1 ? 'Etternavn' : `Felt ${i + 1}`} />
   ));
 
   const mainJsx = (
-    <main id="content" tabIndex={-1} className="extContainer">
+    <main id="content" tabIndex={-1}>
       {hasH1 && <h1>Eksempelside</h1>}
       <article className="semanticArticle">
         {hasSteplist && (
@@ -68,7 +67,7 @@ function tryGenerateStructuredPage(raw: string): GenResult | null {
     </main>
   );
 
-  // Kode-streng (matcher layouten over)
+  // Kode-streng (matcher strukturen)
   const tfCode = textFieldsJsx
     .map((_, i) => {
       const label = i === 0 ? 'Fornavn' : i === 1 ? 'Etternavn' : `Felt ${i + 1}`;
@@ -78,7 +77,7 @@ function tryGenerateStructuredPage(raw: string): GenResult | null {
 
   const parts: string[] = [];
   if (wantsTop) parts.push('  <TopBannerExternal />');
-  parts.push('  <main id="content" tabIndex={-1} className="extContainer">');
+  parts.push('  <main id="content" tabIndex={-1}>');
   if (hasH1) parts.push('    <h1>Eksempelside</h1>');
   parts.push('    <article className="semanticArticle">');
   if (hasSteplist)
@@ -116,71 +115,55 @@ export default function App() {
   const [prompt, setPrompt] = useState('');
   const [code, setCode] = useState('');
   const [component, setComponent] = useState<ReactElement | null>(null);
-  const [copiedTop, setCopiedTop] = useState(false);
   const [copiedCodeBlock, setCopiedCodeBlock] = useState(false);
 
   const handleGenerate = () => {
     const { jsx, code } = generateFromPrompt(prompt);
     setComponent(jsx);
     setCode(code);
-    setCopiedTop(false);
     setCopiedCodeBlock(false);
   };
 
-  const copyCode = async (where: 'top' | 'block') => {
+  const copyCode = async () => {
     try {
       await navigator.clipboard.writeText(code);
-      if (where === 'top') {
-        setCopiedTop(true);
-        setCopiedCodeBlock(false);
-      } else {
-        setCopiedCodeBlock(true);
-        setCopiedTop(false);
-      }
+      setCopiedCodeBlock(true);
     } catch {
       alert('Klarte ikke å kopiere – kopier manuelt (Ctrl/Cmd+C).');
     }
   };
 
   return (
-    <>
-      {/* Generator-panel i samme responsive bredde som siden */}
-      <div className="extContainer">
-        <article className="semanticArticle">
-          <div style={{ padding: 16, border: '1px solid #ddd', background: '#fafafa', borderRadius: 6 }}>
-            <label htmlFor="prompt" style={{ display: 'block', fontWeight: 600 }}>
-              Hva vil du lage?
-            </label>
+    <div className="pageRoot">
+      <div className="pageInner">
 
-            <textarea
-              id="prompt"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              rows={4}
-              style={{ width: '100%', marginTop: 8, padding: 8, fontFamily: 'inherit' }}
-              placeholder={`Skriv ovenfra og ned, f.eks.:
+        {/* Generator-panel (følger samme bredde som siden) */}
+        <div style={{ border: '1px solid #ddd', background: '#fafafa', borderRadius: 6, padding: 16, marginBottom: 24 }}>
+          <label htmlFor="prompt" style={{ display: 'block', fontWeight: 600 }}>
+            Hva vil du lage?
+          </label>
+          <textarea
+            id="prompt"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            rows={4}
+            style={{ width: '100%', marginTop: 8, padding: 8, fontFamily: 'inherit' }}
+            placeholder={`Skriv ovenfra og ned, f.eks.:
 topbanner
 hovedinnhold: h1, steplist, 2 tekstfelt
 footer`}
-            />
-
-            <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
-              <Button variant="primary" onClick={handleGenerate}>Generer</Button>
-            </div>
+          />
+          <div style={{ marginTop: 8 }}>
+            <button onClick={handleGenerate}>Generer</button>
           </div>
-        </article>
-      </div>
+        </div>
 
-      {/* Resultat – også i container */}
-      {code && (
-        <div className="extContainer" style={{ paddingTop: 16 }}>
-          <article className="semanticArticle">
+        {/* Resultat */}
+        {code && (
+          <>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ fontWeight: 600, marginBottom: 4 }}>Generert kode</div>
-              {/* Ekstra kopier-knapp ved kodevisningen */}
-              <Button variant="secondary" onClick={() => copyCode('block')}>
-                {copiedCodeBlock ? 'Kopiert!' : 'Kopier kode'}
-              </Button>
+              <button onClick={copyCode}>{copiedCodeBlock ? 'Kopiert!' : 'Kopier kode'}</button>
             </div>
 
             <pre
@@ -189,28 +172,23 @@ footer`}
                 padding: 12,
                 overflow: 'auto',
                 border: '1px solid #e0e0e0',
-                borderRadius: 6
+                borderRadius: 6,
+                marginBottom: 24
               }}
             >
               {code}
             </pre>
 
-            <div style={{ marginTop: 24 }}>
+            <div>
               <div style={{ fontWeight: 600, marginBottom: 4 }}>Forhåndsvisning</div>
-              <div
-                style={{
-                  padding: 16,
-                  border: '1px solid #ddd',
-                  borderRadius: 4,
-                  background: '#fff',
-                }}
-              >
+              <div style={{ padding: 16, border: '1px solid #ddd', borderRadius: 4, background: '#fff' }}>
                 {component}
               </div>
             </div>
-          </article>
-        </div>
-      )}
-    </>
+          </>
+        )}
+
+      </div>
+    </div>
   );
 }

@@ -1,24 +1,29 @@
-/* Sentrert, responsiv container – matcher skatteetaten.no */
-.extContainer {
+/* Topp-wrapper som alltid sentrerer hele siden */
+.pageRoot {
+  display: flex;
+  justify-content: center;
   width: 100%;
-  max-width: 1160px;           /* L */
-  margin: 0 auto;
-  box-sizing: border-box;
-  padding: 24px;               /* litt luft på alle skjermer */
 }
 
-/* Trinn ned til M og S */
+.pageInner {
+  width: 100%;
+  max-width: 1160px;       /* L */
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* Trinn ned (M og S) */
 @media (max-width: 1200px) {
-  .extContainer { max-width: 960px; }   /* M */
+  .pageInner { max-width: 960px; }   /* M */
 }
 @media (max-width: 1000px) {
-  .extContainer { max-width: 560px; }   /* S */
+  .pageInner { max-width: 560px; }   /* S */
 }
 
-/* Smalere spalte for brødtekst/innhold (som artikkel) */
+/* Smalere lese-/innholdsspalte for artikkel */
 .semanticArticle {
   width: 100%;
-  max-width: 760px;            /* komfortabel lesebredde */
+  max-width: 760px;
   margin: 0 auto;
 }
 
