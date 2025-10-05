@@ -1,32 +1,27 @@
-/* Topp-wrapper som alltid sentrerer hele siden */
-.pageRoot {
-  display: flex;
-  justify-content: center;
+/* Én enkel, robust sidecontainer: midtstilt og riktig bredder */
+.site {
   width: 100%;
-}
-
-.pageInner {
-  width: 100%;
-  max-width: 1160px;       /* L */
+  max-width: 1160px;   /* L */
+  margin: 0 auto;      /* midtstill */
   padding: 24px;
   box-sizing: border-box;
 }
 
-/* Trinn ned (M og S) */
+/* Nedtrapping til M og S */
 @media (max-width: 1200px) {
-  .pageInner { max-width: 960px; }   /* M */
+  .site { max-width: 960px; }   /* M */
 }
 @media (max-width: 1000px) {
-  .pageInner { max-width: 560px; }   /* S */
+  .site { max-width: 560px; }   /* S */
 }
 
-/* Smalere lese-/innholdsspalte for artikkel */
+/* Smalere lesesøyle for brødtekst (h1, inputs, osv) */
 .semanticArticle {
   width: 100%;
   max-width: 760px;
   margin: 0 auto;
 }
 
-/* grunnrydding */
+/* Grunnrydding */
 html, body, #root { min-height: 100%; }
 body { margin: 0; }

@@ -1,5 +1,5 @@
 import '@skatteetaten/ds-core-designtokens/index.css';
-import './layout.css'; // viktige container-klasser
+import './layout.css';
 import { useState, type ReactElement } from 'react';
 import { TextField } from '@skatteetaten/ds-forms';
 import { TopBannerExternal, Footer } from '@skatteetaten/ds-layout';
@@ -47,7 +47,6 @@ function tryGenerateStructuredPage(raw: string): GenResult | null {
   if (countMatch) textFieldCount = parseInt(countMatch[1], 10);
   if (!countMatch && /\b(tekstfelt|input)\b/.test(n)) textFieldCount = 1;
 
-  // JSX for main (bruk samme bredde som resten av siden)
   const textFieldsJsx = Array.from({ length: textFieldCount }, (_, i) => (
     <TextField key={i} label={i === 0 ? 'Fornavn' : i === 1 ? 'Etternavn' : `Felt ${i + 1}`} />
   ));
@@ -67,7 +66,6 @@ function tryGenerateStructuredPage(raw: string): GenResult | null {
     </main>
   );
 
-  // Kode-streng (matcher strukturen)
   const tfCode = textFieldsJsx
     .map((_, i) => {
       const label = i === 0 ? 'Fornavn' : i === 1 ? 'Etternavn' : `Felt ${i + 1}`;
@@ -134,61 +132,57 @@ export default function App() {
   };
 
   return (
-    <div className="pageRoot">
-      <div className="pageInner">
-
-        {/* Generator-panel (følger samme bredde som siden) */}
-        <div style={{ border: '1px solid #ddd', background: '#fafafa', borderRadius: 6, padding: 16, marginBottom: 24 }}>
-          <label htmlFor="prompt" style={{ display: 'block', fontWeight: 600 }}>
-            Hva vil du lage?
-          </label>
-          <textarea
-            id="prompt"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            rows={4}
-            style={{ width: '100%', marginTop: 8, padding: 8, fontFamily: 'inherit' }}
-            placeholder={`Skriv ovenfra og ned, f.eks.:
+    <div className="site">
+      {/* Generator-panel – følger samme bredde som hele siden */}
+      <div style={{ border: '1px solid #ddd', background: '#fafafa', borderRadius: 6, padding: 16, marginBottom: 24 }}>
+        <label htmlFor="prompt" style={{ display: 'block', fontWeight: 600 }}>
+          Hva vil du lage?
+        </label>
+        <textarea
+          id="prompt"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          rows={4}
+          style={{ width: '100%', marginTop: 8, padding: 8, fontFamily: 'inherit' }}
+          placeholder={`Skriv ovenfra og ned, f.eks.:
 topbanner
 hovedinnhold: h1, steplist, 2 tekstfelt
 footer`}
-          />
-          <div style={{ marginTop: 8 }}>
-            <button onClick={handleGenerate}>Generer</button>
-          </div>
+        />
+        <div style={{ marginTop: 8 }}>
+          <button onClick={handleGenerate}>Generer</button>
         </div>
-
-        {/* Resultat */}
-        {code && (
-          <>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ fontWeight: 600, marginBottom: 4 }}>Generert kode</div>
-              <button onClick={copyCode}>{copiedCodeBlock ? 'Kopiert!' : 'Kopier kode'}</button>
-            </div>
-
-            <pre
-              style={{
-                background: '#f4f4f4',
-                padding: 12,
-                overflow: 'auto',
-                border: '1px solid #e0e0e0',
-                borderRadius: 6,
-                marginBottom: 24
-              }}
-            >
-              {code}
-            </pre>
-
-            <div>
-              <div style={{ fontWeight: 600, marginBottom: 4 }}>Forhåndsvisning</div>
-              <div style={{ padding: 16, border: '1px solid #ddd', borderRadius: 4, background: '#fff' }}>
-                {component}
-              </div>
-            </div>
-          </>
-        )}
-
       </div>
+
+      {/* Resultat – også i .site */}
+      {code && (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ fontWeight: 600, marginBottom: 4 }}>Generert kode</div>
+            <button onClick={copyCode}>{copiedCodeBlock ? 'Kopiert!' : 'Kopier kode'}</button>
+          </div>
+
+          <pre
+            style={{
+              background: '#f4f4f4',
+              padding: 12,
+              overflow: 'auto',
+              border: '1px solid #e0e0e0',
+              borderRadius: 6,
+              marginBottom: 24
+            }}
+          >
+            {code}
+          </pre>
+
+          <div>
+            <div style={{ fontWeight: 600, marginBottom: 4 }}>Forhåndsvisning</div>
+            <div style={{ padding: 16, border: '1px solid #ddd', borderRadius: 4, background: '#fff' }}>
+              {component}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
