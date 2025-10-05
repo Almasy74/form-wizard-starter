@@ -1,0 +1,17 @@
+/* Sentrert, responsiv container (S/M/L) fra DS-tokens */
+.extContainer {
+  width: var(--semantic-responsive-container);
+  box-sizing: border-box;
+  padding: var(--semantic-responsive-container-spacing);
+  margin: 0 auto;
+}
+
+/* Smalere artikkelkolonne for innhold/lesetekst */
+.semanticArticle {
+  width: var(--semantic-responsive-article);
+  margin: 0 auto;
+}
+
+/* (valgfritt) grunnrydding */
+html, body, #root { min-height: 100%; }
+body { margin: 0; }
